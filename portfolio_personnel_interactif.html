@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site avec Effets au Scroll</title>
+    <style>
+        /* Styles Généraux */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* En-tête plein écran */
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1e1b4b, #0f172a);
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            color: #38bdf8;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: #94a3b8;
+        }
+
+        /* Indicateur de scroll animé */
+        .scroll-down {
+            margin-top: 50px;
+            font-size: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* Sections de contenu */
+        section {
+            min-height: 80vh;
+            padding: 60px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+        }
+
+        .card {
+            background-color: #1e293b;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+        }
+
+        .card h3 {
+            color: #f43f5e;
+            margin-top: 0;
+        }
+
+        /* -----------------------------------------
+           CLASSES POUR LES EFFETS AU SCROLL (CSS)
+        -------------------------------------------- */
+        
+        /* État initial caché (invisible et décalé vers le bas) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        /* État initial caché pour l'effet de côté (gauche) */
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-100px);
+            transition: all 0.8s ease;
+        }
+
+        /* État actif quand l'élément devient visible au scroll */
+        .reveal.active, .reveal-left.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Section d'accueil -->
+    <header>
+        <h1>Découvrez les effets au scroll</h1>
+        <p>Faites défiler la page vers le bas pour voir la magie opérer 👇</p>
+        <div class="scroll-down">🔽</div>
+    </header>
+
+    <!-- Section 1 : Apparition classique vers le haut -->
+    <section>
+        <div class="container">
+            <!-- Ajout de la classe "reveal" sur les éléments à animer -->
+            <div class="card reveal">
+                <h3>Effet Fondu Bas</h3>
+                <p>Cette carte apparaît progressivement en remontant légèrement grâce à la classe CSS <code>reveal</code> et à JavaScript.</p>
+            </div>
+            <div class="card reveal">
+                <h3>Détection Automatique</h3>
+                <p>Le script calcule la position de l'élément dans la page. Dès qu'il entre dans l'écran, l'animation se déclenche.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2 : Apparition depuis la gauche -->
+    <section style="background-color: #111827;">
+        <div class="container">
+            <!-- Ajout de la classe "reveal-left" pour un effet latéral -->
+            <div class="card reveal-left">
+                <h3>Effet Latéral Gauche</h3>
+                <p>On peut facilement personnaliser l'effet. Cette carte arrive depuis la gauche de l'écran (<code>reveal-left</code>).</p>
+            </div>
+            <div class="card reveal">
+                <h3>Fluidité</h3>
+                <p>Les transitions CSS garantissent une animation fluide à 60 images par seconde sur ordinateur comme sur mobile.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3 : Un dernier bloc pour tester -->
+    <section>
+        <div class="container">
+            <div class="card reveal">
+                <h3>Fin de la page</h3>
+                <p>Vous pouvez ajouter autant d'éléments animés que vous le souhaitez en leur appliquant simplement la classe requise.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- -----------------------------------------
+       SCRIPT JAVASCRIPT POUR ACTIVER LE SCROLL
+    -------------------------------------------- */ -->
+    <script>
+        function animerAuScroll() {
+            // On sélectionne tous les éléments qui ont une classe d'animation
+            const elementsAAnimer = document.querySelectorAll('.reveal, .reveal-left');
+            
+            elementsAAnimer.forEach(element => {
+                // Position du haut de l'élément par rapport à la zone visible
+                const positionElement = element.getBoundingClientRect().top;
+                // Hauteur de la fenêtre du navigateur
+                const hauteurFenetre = window.innerHeight;
+                
+                // Si l'élément est visible à au moins 150px du bas de l'écran
+                if (positionElement < hauteurFenetre - 150) {
+                    element.classList.add('active'); // On ajoute la classe qui déclenche l'effet
+                } else {
+                    element.classList.remove('active'); // Facultatif : retire l'effet si on remonte
+                }
+            });
+        }
+
+        // On écoute l'événement de scroll pour lancer la fonction
+        window.addEventListener('scroll', animerAuScroll);
+
+        // On lance la fonction une première fois au chargement pour afficher les éléments déjà visibles
+        animerAuScroll();
+    </script>
+
+</body>
+</html>
